@@ -19,7 +19,6 @@ if(isset($_POST["operacion"])){
       "message" => $isDelete ? "Habitación eliminada correctamente" : "Error al eliminar habitacion"
     ]);
   }
-    
   
   if($_POST["operacion"] == "registrar"){
     $datos = [

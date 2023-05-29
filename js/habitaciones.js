@@ -6,12 +6,11 @@ const App = createApp({
   data() {
     return {
       habitaciones: [],
-      pisos: [],
       tiposHabitaciones: [],
       drawer: null,
       habitacionEditar: null,
       habitacionFilters: {
-        idpiso: "",
+        numpiso: "",
         idtipohabitacion: "",
         numHabitacion: "",
       },
@@ -21,21 +20,25 @@ const App = createApp({
     openDrawer() {
       this.drawer.open();
     },
+
     closeDrawer() {
       this.drawer.close();
       this.habitacionEditar = null;
     },
+
     resetFilters() {
       this.habitacionFilters = {
-        idpiso: "",
+        numpiso: "",
         idtipohabitacion: "",
         numHabitacion: "",
       };
     },
+
     editHandler(habitacion) {
       this.habitacionEditar = habitacion;
       this.openDrawer();
     },
+
     deleteHabitacion(idhabitacion) {
       Swal.fire({
         title: "Estas Seguro de eliminar?",
@@ -69,6 +72,7 @@ const App = createApp({
         }
       });
     },
+
     registerOrEditHabitacion(e) {
       const data = new FormData(e.target);
       
@@ -77,6 +81,7 @@ const App = createApp({
         data.append("idHabitacion", this.habitacionEditar.idhabitacion);
       }else{
         data.append("operacion", "registrar");
+        console.log(Object.fromEntries(data.entries()))
       }
 
       fetch("../controllers/habitaciones.controller.php", {
@@ -113,14 +118,6 @@ const App = createApp({
       this.habitaciones = data;
     },
 
-    async getpisos() {
-      const res = await fetch(
-        "../controllers/listado.controller.php?operacion=listarPisos"
-      );
-      const { data } = await res.json();
-      this.pisos = data;
-    },
-
     async getTiposHabitaciones() {
       const response = await fetch(
         "../controllers/listado.controller.php?operacion=listarTipoHabitaciones"
@@ -133,7 +130,6 @@ const App = createApp({
   async mounted() {
     Promise.all([
       this.getHabitaciones(),
-      this.getpisos(),
       this.getTiposHabitaciones(),
     ]).then((res) => {
       this.drawer = new Drawer("drawer");
@@ -152,10 +148,9 @@ const App = createApp({
       const filteredValues = Object.entries(this.habitacionFilters).filter(
         ([_, value]) => value !== ""
       );
-
       return this.habitaciones.filter((habitacion) => {
         return filteredValues.every(
-          ([key, value]) => habitacion[key] === value
+          ([key, value]) => habitacion[key] == value
         );
       });
     },

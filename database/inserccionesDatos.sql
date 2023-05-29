@@ -23,13 +23,9 @@ INSERT INTO tipo_habitaciones(nombre, cantmaxpersona) VALUES
 ('TRIPLE', 3),
 ('SUITE', 4);
 
-INSERT INTO pisos(piso) VALUES
-('PRIMER PISO'),
-('SEGUNDO PISO'),
-('TERCER PISO'),
-('CUARTO PISO');
 
-INSERT INTO  habitaciones(numHabitacion,idtipohabitacion, idpiso, precio, detalles)
+
+INSERT INTO  habitaciones(numHabitacion,idtipohabitacion, numpiso, precio, detalles)
 VALUES 
 (1,1, 4, 40, "Cable,Wifi,Tv,baño"),
 (2,2,1,70, "Cable,Wifi,Tv,baño"),
@@ -65,47 +61,35 @@ VALUES
 
 
 
+
 -- alquiler prueba habitacion 9 
-INSERT INTO alquileres(idhabitacion, idusuario,registroentrada , cantidaddias, precio ) VALUES
-(9, 1, NOW(), 2, 90.00);
-
 INSERT INTO clientes(idpersona) VALUES (2);
-
-INSERT INTO pagos(idalquiler, idcliente,tipocomprobante , montopago ) VALUES
-(1,1, 'B', 180);
-
+INSERT INTO alquileres(idhabitacion, idusuario, idcliente, registroentrada, cantidaddias, precio, tipocomprobante, numcomprobante) VALUES
+(9, 1, 1, NOW(), 2, 90.00, 'B', 'B000001');
 INSERT INTO detalles_huspedes(idalquiler, idpersona) VALUES
 (1, 1),
 (1,2);
-
 UPDATE habitaciones SET estadohabitacion = 'O' WHERE idhabitacion = 9;
 
 -- alquiler habitacion 1
-INSERT INTO alquileres(idhabitacion, idusuario,registroentrada , cantidaddias, precio ) VALUES
-(1, 1, NOW(), 1, 40.00);
-
-INSERT INTO clientes(idpersona) VALUES (6);
-
-INSERT INTO pagos(idalquiler, idcliente,tipocomprobante , montopago ) VALUES
-(2,2, 'B', 40.00);
-
+INSERT INTO clientes(idpersona) VALUES (2);
+INSERT INTO alquileres(idhabitacion, idusuario, idcliente, registroentrada, cantidaddias, precio, tipocomprobante, numcomprobante) VALUES
+(1, 1, 2, NOW(), 2, 90.00, 'B', 'B000002');
 INSERT INTO detalles_huspedes(idalquiler, idpersona) VALUES
 (2, 6);
-
 UPDATE habitaciones SET estadohabitacion = 'O' WHERE idhabitacion = 1;
 
 -- alquiler habitacion 10
-INSERT INTO alquileres(idhabitacion, idusuario,registroentrada , cantidaddias, precio ) VALUES
-(10, 1, NOW(), 1, 40.00);
-
+INSERT INTO clientes(idpersona) VALUES (3);
+INSERT INTO alquileres(idhabitacion, idusuario, idcliente, registroentrada, cantidaddias, precio, tipocomprobante, numcomprobante) VALUES
+(10, 1, 3, NOW(), 2, 90.00, 'B', 'B000003');
 INSERT INTO clientes(idpersona) VALUES (10);
-
 INSERT INTO pagos(idalquiler, idcliente,tipocomprobante , montopago ) VALUES
 (3,3, 'B', 40.00);
-
 INSERT INTO detalles_huspedes(idalquiler, idpersona) VALUES
 (3, 10);
-
 UPDATE habitaciones SET estadohabitacion = 'O' WHERE idhabitacion = 10;
 
+
 UPDATE habitaciones SET estadohabitacion = 'M' WHERE idhabitacion = 5;
+

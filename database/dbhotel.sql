@@ -41,15 +41,6 @@ CREATE TABLE tipo_habitaciones(
 	CONSTRAINT uk_nombre_tipohabitacion UNIQUE (nombre)
 )ENGINE=INNODB;
 
-CREATE TABLE pisos(
-	idpiso						INT AUTO_INCREMENT PRIMARY KEY,
-	piso							VARCHAR(40) NOT NULL,
-	estado        		BIT NOT NULL DEFAULT 1,
-	create_at				 	DATETIME NOT NULL DEFAULT NOW(),
-	update_at					DATETIME NULL,
-	
-	CONSTRAINT uk_piso_piso UNIQUE (piso)
-)ENGINE=INNODB;
 
 CREATE TABLE habitaciones(
 	idhabitacion				INT AUTO_INCREMENT PRIMARY KEY,
@@ -58,13 +49,12 @@ CREATE TABLE habitaciones(
 	estadohabitacion 		CHAR(1) NOT NULL DEFAULT 'D', -- D: Disponible, O: Ocupado, M: Mantenimiento
 	detalles						VARCHAR(300) NOT NULL,
 	precio							DECIMAL(7,2) NOT NULL,
-	idpiso							INT NOT NULL,
+	numpiso							INT NOT NULL,
 	estado              BIT NOT NULL DEFAULT 1,
 	create_at				 		DATETIME NOT NULL DEFAULT NOW(),
 	update_at						DATETIME NULL,
 
 	CONSTRAINT fk_idtipohabitacion_habitaciones FOREIGN KEY (idtipohabitacion) REFERENCES tipo_habitaciones(idtipohabitacion),
-	CONSTRAINT fk_idpiso_habitaciones FOREIGN KEY (idpiso) REFERENCES pisos(idpiso),
 	CONSTRAINT uk_numHabitacion_habitaciones UNIQUE (numHabitacion),
 	CONSTRAINT ck_estadohabitacion_habitaciones CHECK (estadohabitacion IN ('D', 'O', 'M'))
 )ENGINE=INNODB;
@@ -75,7 +65,7 @@ CREATE TABLE empresas(
 	ruc							CHAR(11) NOT NULL,
 	nombre				  VARCHAR(70) NOT NULL,
 	direccion				VARCHAR(100) NULL,
-	telefono				CHAR(9) NULL,
+	telefono				CHAR(7) NULL,
 	email						VARCHAR(100) NULL,
 	estado          BIT NOT NULL DEFAULT 1,
 	create_at				DATETIME NOT NULL DEFAULT NOW(),
@@ -99,17 +89,23 @@ CREATE TABLE clientes(
 CREATE TABLE alquileres(
 	idalquiler					INT AUTO_INCREMENT PRIMARY KEY,
 	idhabitacion				INT NOT NULL,
+	idcliente					INT NOT NULL,
 	idusuario					INT NOT NULL,
 	registroentrada			DATETIME NOT NULL DEFAULT NOW(),
 	registrosalida				DATETIME NULL,
 	cantidaddias				INT NOT NULL,
 	precio						DECIMAL(7,2) NOT NULL,
+	tipocomprobante			CHAR(1), -- B=boleta F=factura,
+	fechaemision				DATETIME NOT NULL DEFAULT NOW(),
+	numcomprobante				CHAR(9) NOT NULL,
 	estado              		BIT NOT NULL DEFAULT 1,
 	create_at				 	DATETIME NOT NULL DEFAULT NOW(),
 	update_at					DATETIME NULL,
-
+	
+	CONSTRAINT fk_idcliente_alquileres FOREIGN KEY (idcliente) REFERENCES clientes(idcliente),
 	CONSTRAINT fk_idhabitacion_alquileres FOREIGN KEY (idhabitacion) REFERENCES habitaciones(idhabitacion),
-	CONSTRAINT fk_idusuario_alquileres FOREIGN KEY (idusuario) REFERENCES usuarios(idusuario)
+	CONSTRAINT fk_idusuario_alquileres FOREIGN KEY (idusuario) REFERENCES usuarios(idusuario),
+	CONSTRAINT ck_tipocomprobante_alquileres CHECK (tipocomprobante IN ('B', 'F'))
 )ENGINE=INNODB;
 
 CREATE TABLE detalles_huspedes(
@@ -124,17 +120,4 @@ CREATE TABLE detalles_huspedes(
 	CONSTRAINT fk_idpersona_detalles_huspedes FOREIGN KEY (idpersona) REFERENCES personas(idpersona)
 )ENGINE=INNODB;
 
-CREATE TABLE pagos(
-	idpago						INT AUTO_INCREMENT PRIMARY KEY,
-	idalquiler				INT NOT NULL,
-	idcliente					INT NOT NULL,
-	tipocomprobante		CHAR(1) NOT NULL DEFAULT 'B', -- B: Boleta, F: Factura
-	montopago					DECIMAL(7,2) NOT NULL,
-	fechaemision			DATETIME NOT NULL DEFAULT NOW(),
-	estado            BIT NOT NULL DEFAULT 1,
-	create_at				 	DATETIME NOT NULL DEFAULT NOW(),
-	update_at					DATETIME NULL,
 
-	CONSTRAINT fk_idalquiler_pagos FOREIGN KEY (idalquiler) REFERENCES alquileres(idalquiler),
-	CONSTRAINT fk_idcliente_pagos FOREIGN KEY (idcliente) REFERENCES clientes(idcliente)
-)ENGINE=INNODB;

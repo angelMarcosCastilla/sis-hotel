@@ -31,7 +31,7 @@ class Habitacion {
       ));
       return true;
     } catch (Exception $e) {
-      return false;
+     return false;
     }
   }
 
@@ -58,7 +58,7 @@ class Habitacion {
       ));
       return true;
     } catch (Exception $e) {
-      return false;
+      die($e->getMessage());
     }
   }
 

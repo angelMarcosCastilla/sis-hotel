@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function login() {
     const data = new FormData($form)
     data.append("operacion", "iniciarSesion")
-
+    
     const url = new URLSearchParams(data)
 
     fetch(`./controllers/user.controller.php?${url.toString()}`)

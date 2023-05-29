@@ -11,7 +11,7 @@ const App = createApp({
       modalRegisterAlquiler: null,
       modalRegistroSalida: null,
       habitacionFilters: {
-        idpiso: "",
+        numpiso: "",
         idtipohabitacion: "",
         numHabitacion: "",
       },
@@ -21,10 +21,14 @@ const App = createApp({
   methods: {
     openModal(detalleHabitacion) {
       this.detalleHabitacion = detalleHabitacion;
+
       if(detalleHabitacion.estadohabitacion === "D"){
+
         this.modalRegisterAlquiler.open();
+
       }else if(detalleHabitacion.estadohabitacion === "O"){
         this.modalRegistroSalida.open();
+
       }else {
         Swal.fire({
           title: 'Are you sure?',
@@ -52,7 +56,7 @@ const App = createApp({
 
     resetFilters() {
       this.habitacionFilters = {
-        idpiso: "",
+        numpiso: "",
         idtipohabitacion: "",
         numHabitacion: "",
       };
@@ -73,14 +77,6 @@ const App = createApp({
       this.habitaciones = data;
     },
 
-    async getpisos() {
-      const res = await fetch(
-        "../controllers/listado.controller.php?operacion=listarPisos"
-      );
-      const { data } = await res.json();
-      this.pisos = data;
-    },
-
     async getTiposHabitaciones() {
       const response = await fetch(
         "../controllers/listado.controller.php?operacion=listarTipoHabitaciones"
@@ -93,7 +89,6 @@ const App = createApp({
   async mounted() {
     Promise.all([
       this.getHabitaciones(),
-      this.getpisos(),
       this.getTiposHabitaciones(),
     ]).then((res) => {
       $("#loading").style.display = "none";
@@ -116,7 +111,7 @@ const App = createApp({
 
       return this.habitaciones.filter((habitacion) => {
         return filteredValues.every(
-          ([key, value]) => habitacion[key] === value
+          ([key, value]) => habitacion[key] == value
         );
       });
     },
@@ -153,7 +148,7 @@ App.component("habitacion-card", {
         </span>
         <span class="card-tipo">  {{habitacion.tipohabitacion}}</span>
       </h2>
-      <span class="card-subtitle"> {{habitacion.piso}}</span>
+      <span class="card-subtitle"> {{habitacion.numpiso}}</span>
       <span :class="badgeColor">
         {{textEstadoHabitacion}}</span>
       <span class="card-subtitle">
@@ -175,7 +170,7 @@ App.component("habitacion-detalle", {
       </div>
       <div style="padding-left:1rem">
         <p>Tipo: {{habitacion.tipohabitacion}}</p>
-        <p>Piso: {{habitacion.piso}}</p>
+        <p>Piso: {{habitacion.numpiso}}</p>
         <p>Precio: {{habitacion.precio}}</p>
         <p>Personas: {{habitacion.cantmaxpersona}}</p>
       </div>
@@ -202,6 +197,12 @@ App.component("huespedes-registrar",{
       this.huespedes.push(huesped);
       this.numeroDocumento = "";
     },
+
+    deleteHusped(dni){
+      const newHusped = this.huespedes.filter(huesped => huesped !== dni)
+      console.log(newHusped)
+      this.huespedes = newHusped
+    }
   },
   template:`
   <div>
@@ -225,7 +226,7 @@ App.component("huespedes-registrar",{
             <td class="table__body-cell">{{huesped.nombres}}</td>
             <td class="table__body-cell">{{huesped.apellido}}</td>
             <td class="table__body-cell">
-              <button type="button" class="iconButton">x</button>
+              <button type="button" class="iconButton" @click="deleteHusped(huesped.dni)">x</button>
             </td>
           </tr>
         </tbody>
