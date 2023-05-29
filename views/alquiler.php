@@ -139,7 +139,7 @@
                       <huespedes-registrar :cantmaxpersona="detalleHabitacion.cantmaxpersona" />
                     </fieldset>
                   </div>
-                  <button type="button" class="buttonRegister">
+                  <button type="button" class="buttonRegister" @click="createAlquiler">
                     Registrar
                   </button>
                 </form>

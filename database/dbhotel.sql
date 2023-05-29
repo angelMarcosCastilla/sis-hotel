@@ -56,7 +56,7 @@ CREATE TABLE habitaciones(
 	numHabitacion				INT NOT NULL,
 	idtipohabitacion		INT NOT NULL,
 	estadohabitacion 		CHAR(1) NOT NULL DEFAULT 'D', -- D: Disponible, O: Ocupado, M: Mantenimiento
-	detalles						varchar(300) NOT NULL,
+	detalles						VARCHAR(300) NOT NULL,
 	precio							DECIMAL(7,2) NOT NULL,
 	idpiso							INT NOT NULL,
 	estado              BIT NOT NULL DEFAULT 1,
@@ -97,14 +97,14 @@ CREATE TABLE clientes(
 )ENGINE=INNODB;
 
 CREATE TABLE alquileres(
-	idalquiler				INT AUTO_INCREMENT PRIMARY KEY,
-	idhabitacion			INT NOT NULL,
+	idalquiler					INT AUTO_INCREMENT PRIMARY KEY,
+	idhabitacion				INT NOT NULL,
 	idusuario					INT NOT NULL,
-	registroentrada		DATETIME NOT NULL DEFAULT NOW(),
-	registrosalida		DATETIME NULL,
-	cantidadnoches		INT NOT NULL,
+	registroentrada			DATETIME NOT NULL DEFAULT NOW(),
+	registrosalida				DATETIME NULL,
+	cantidaddias				INT NOT NULL,
 	precio						DECIMAL(7,2) NOT NULL,
-	estado              BIT NOT NULL DEFAULT 1,
+	estado              		BIT NOT NULL DEFAULT 1,
 	create_at				 	DATETIME NOT NULL DEFAULT NOW(),
 	update_at					DATETIME NULL,
 

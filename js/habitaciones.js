@@ -56,7 +56,7 @@ const App = createApp({
               if (data.success) {
                 Swal.fire(
                   "Deleted!",
-                  "Your file has been deleted.",
+                  "el registro se elimino correctamente",
                   "success"
                 ).then(() => {
                   this.getHabitaciones();

@@ -70,7 +70,7 @@ label {
 input {
   border: none;
   outline: none;
-  padding: 12px  16px;
+  padding: 8px  16px;
   width: 100%;
   border-radius: var(--radius-sm);
   border: 1px solid var(--gray-300);
@@ -87,9 +87,9 @@ button {
   outline: none;
   background-color: var(--primary-color);
   width: 100%;
-  padding: calc(var(--space));
+  padding: 6px  calc(var(--space));
   color: white;
-  font-size: 1.1rem;
+  font-size: .9rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
 }
@@ -117,7 +117,7 @@ a {
 select {
   border: none;
   outline: none;
-  padding: 12px 16px;
+  padding: 8px 16px;
   background-color: var(--bg-primary);
   color: var(--text-color);
   width: 100%;
@@ -132,7 +132,7 @@ select:focus {
 textarea{
   border: none;
   outline: none;
-  padding: 12px 16px;
+  padding: 8px 16px;
   background-color: var(--bg-primary);
   color: var(--text-color);
   width: 100%;

@@ -37,7 +37,7 @@ BEGIN
 	INNER JOIN tipo_habitaciones ON tipo_habitaciones.idtipohabitacion = habitaciones.idtipohabitacion
 	INNER JOIN pisos ON pisos.idpiso = habitaciones.idpiso
 	WHERE habitaciones.estado = 1
-    ORDER BY habitaciones.numHabitacion Asc;
+    ORDER BY habitaciones.numHabitacion ASC;
 END $$
 DELIMITER $$
 CREATE PROCEDURE spu_registrar_habitacion(
@@ -77,4 +77,52 @@ CREATE PROCEDURE spu_eliminar_habitacion(IN _idhabitacion INT)
 BEGIN
 	UPDATE habitaciones SET estado = 0 WHERE idhabitacion = _idhabitacion;
 END $$
+
+DELIMITER $$
+CREATE PROCEDURE spu_totalestado_habitacion()
+BEGIN
+	SELECT COUNT(*) AS 'total', estadohabitacion FROM habitaciones
+	GROUP BY estadohabitacion;
+END $$
+
+DELIMITER $$
+CREATE PROCEDURE spu_alquiladashoy_habitacion()
+BEGIN
+	SELECT  COUNT(*) AS 'totalAlquiler' FROM alquileres WHERE  DATE(registroentrada) = DATE(NOW());
+END $$
+
+DELIMITER $$
+CREATE PROCEDURE spu_create_alquiler(
+IN _idhabitacion		INT, 
+IN _idusuario 			INT,
+IN _registroentrada	DATETIME,
+IN _cantidaddias		INT, 
+IN _precio)				DECIMAL(7,2)
+BEGIN
+	INSERT INTO alquileres(idhabitacion, idusuario,registroentrada , cantidaddias, precio ) VALUES
+	(_idhabitacion	, _idusuario, _registroentrada, _cantidaddias, _precio);
+END $$
+
+
+DELIMITER $$
+CREATE PROCEDURE spu_create_cliente(
+IN _idpersona	INT,
+IN _idempresa	INT
+BEGIN
+	INSERT INTO clientes(idpersona, idempresa) VALUES (_idpersona, _idempresa);
+END $$
+
+
+DELIMITER $$
+CREATE PROCEDURE spu_create_pago(
+IN _idalquiler		INT,
+IN _idcliente		INT,
+IN _tipocomprobante	CHAR(1),
+IN _montopago 	DECIMAL(7,2)
+BEGIN
+	INSERT INTO pagos(idalquiler, idcliente,tipocomprobante , montopago ) VALUES
+	(_idalquiler,  _idcliente, _tipocomprobante, _montopago);
+END $$
+
+
 

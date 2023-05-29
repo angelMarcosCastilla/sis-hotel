@@ -1,8 +1,51 @@
-.container-grafica{
+.container-grafica {
   display: flex;
   gap: 3rem;
   max-height: 500px;
 }
-.grafica-item{
+
+.grafica-item {
   flex: 1;
+}
+
+.card-Detalles {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+.card-Detalles>article {
+  flex: 1;
+  height: 120px;
+  border: 1px solid var(--shadow);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: var(--bg-secondary);
+}
+
+.card-Detalles>span {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.card-Detalles>article[data-detalle="O"] {
+  color: var(--red-300);
+  background-color: var(--red-100);
+}
+
+.card-Detalles>article[data-detalle="M"] {
+  color: var(--yellow-300);
+  background-color: var(--yellow-100)
+}
+
+.card-Detalles>article[data-detalle="D"] {
+  color: var(--green-300);
+  background-color: var(--green-100)
+}
+
+.card-Detalles>article[data-detalle="C"] {
+  color: var(--primary-color)
 }

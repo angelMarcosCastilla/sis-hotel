@@ -62,3 +62,50 @@ VALUES
 (29,1,3,40, "Cable,Wifi,Tv,baño"),
 (30,2,4,70, "Cable,Wifi,Tv,baño"),
 (31,1,1,40, "Cable,Wifi,Tv,baño");
+
+
+
+-- alquiler prueba habitacion 9 
+INSERT INTO alquileres(idhabitacion, idusuario,registroentrada , cantidaddias, precio ) VALUES
+(9, 1, NOW(), 2, 90.00);
+
+INSERT INTO clientes(idpersona) VALUES (2);
+
+INSERT INTO pagos(idalquiler, idcliente,tipocomprobante , montopago ) VALUES
+(1,1, 'B', 180);
+
+INSERT INTO detalles_huspedes(idalquiler, idpersona) VALUES
+(1, 1),
+(1,2);
+
+UPDATE habitaciones SET estadohabitacion = 'O' WHERE idhabitacion = 9;
+
+-- alquiler habitacion 1
+INSERT INTO alquileres(idhabitacion, idusuario,registroentrada , cantidaddias, precio ) VALUES
+(1, 1, NOW(), 1, 40.00);
+
+INSERT INTO clientes(idpersona) VALUES (6);
+
+INSERT INTO pagos(idalquiler, idcliente,tipocomprobante , montopago ) VALUES
+(2,2, 'B', 40.00);
+
+INSERT INTO detalles_huspedes(idalquiler, idpersona) VALUES
+(2, 6);
+
+UPDATE habitaciones SET estadohabitacion = 'O' WHERE idhabitacion = 1;
+
+-- alquiler habitacion 10
+INSERT INTO alquileres(idhabitacion, idusuario,registroentrada , cantidaddias, precio ) VALUES
+(10, 1, NOW(), 1, 40.00);
+
+INSERT INTO clientes(idpersona) VALUES (10);
+
+INSERT INTO pagos(idalquiler, idcliente,tipocomprobante , montopago ) VALUES
+(3,3, 'B', 40.00);
+
+INSERT INTO detalles_huspedes(idalquiler, idpersona) VALUES
+(3, 10);
+
+UPDATE habitaciones SET estadohabitacion = 'O' WHERE idhabitacion = 10;
+
+UPDATE habitaciones SET estadohabitacion = 'M' WHERE idhabitacion = 5;
