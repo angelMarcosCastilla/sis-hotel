@@ -90,7 +90,76 @@ BEGIN
 	SELECT  COUNT(*) AS 'totalAlquiler' FROM alquileres WHERE  DATE(registroentrada) = DATE(NOW());
 END $$
 
+CALL spu_registrarAlquiler(10,'', 6, 1, NOW(), 2, 300, 'B', '10,11');
 
+select * from detalles_huspedes where idalquiler = 4;
 
+DELIMITER $$
+CREATE PROCEDURE spu_registrarAlquiler(
+	IN _idpersona INT,
+	IN _idempresa INT,
+	IN _idhabitacion INT,
+	IN _idusuario INT,
+	IN _registroentrada DATETIME,
+	IN _cantidaddias	INT,
+	IN _precio DECIMAL(7,2),
+	IN _tipocomprobante CHAR(1),
+	IN _huespedes VARCHAR(30)
+)
+BEGIN
+	-- REGISTRO CLIENTE
+	-- DECLARAR VARIABLES PERSONAS Y EMPRESAS
+	DECLARE elemento INT;
+	DECLARE fin INT DEFAULT 0;
+	DECLARE pos INT DEFAULT 1;
+	SET @idpersona = _idpersona;
+	SET @idempresa = _idempresa;
 
+	IF @idpersona = "" THEN
+		SET @idpersona = NULL;
+	END IF;
 
+	IF @idempresa = "" THEN
+		SET @idempresa = NULL;
+	END IF;
+
+	INSERT INTO clientes(idpersona, idempresa) VALUES (@idpersona, @idempresa);
+	SET @idcliente = LAST_INSERT_ID();
+
+	-- CREAMOS EL NUMERO DE COMPROBANTE
+	-- SI ES BOLETA EMPEZARA CON B Y SI ES FACTURA EMPEZARA CON F
+	-- TENDRA 9 CARACTERES
+	-- EJEMPLOS B00000001, F00000001 
+	IF _tipocomprobante = 'B' THEN
+		SET @serie = 'B';
+		SET @numcomprobante = (SELECT COUNT(*) + 1 FROM alquileres WHERE tipocomprobante = 'B');
+	ELSE
+		SET @serie = 'F';
+		SET @numcomprobante = (SELECT COUNT(*) + 1 FROM alquileres WHERE tipocomprobante = 'F');
+	END IF;
+
+	-- CONCATENAMOS EL NUMERO DE COMPROBANTE
+	SET @numcomprobante = CONCAT(@serie, LPAD(@numcomprobante, 8, '0'));
+	
+	-- insertar alquiler
+	INSERT INTO alquileres(idhabitacion, idusuario, idcliente, registroentrada, cantidaddias, precio, tipocomprobante, numcomprobante)
+	VALUES(_idhabitacion, _idusuario, @idcliente, _registroentrada, _cantidaddias, _precio, _tipocomprobante,  @numcomprobante);
+	SET @idalquiler = LAST_INSERT_ID();
+
+	-- INSERTAR PERSONAS EN EL ALQUILER
+	-- VIENE LOS ID SEPARADOS POR COMAS
+	-- VAMOS A RECORRER CON UN WHILE Y SEPARAMOS LOS ID PARA INSERTARLOS
+  WHILE NOT fin DO
+    SET pos = LOCATE(',', _huespedes);
+    IF pos = 0 THEN
+      SET fin = 1;
+      SET pos = LENGTH(_huespedes) + 1;
+    END IF;
+    
+    SET elemento = SUBSTRING(_huespedes, 1, pos - 1);
+    SET _huespedes = SUBSTRING(_huespedes, pos + 1);
+    -- Realizar la inserción con el valor del elemento
+    INSERT INTO detalles_huespedes(idalquiler, idpersona)
+		VALUES(@idalquiler, elemento);
+  END WHILE;
+END $$

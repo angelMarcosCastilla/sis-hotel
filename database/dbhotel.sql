@@ -1,4 +1,3 @@
-
 CREATE DATABASE hoteldb;
 USE hoteldb;
 
@@ -108,7 +107,7 @@ CREATE TABLE alquileres(
 	CONSTRAINT ck_tipocomprobante_alquileres CHECK (tipocomprobante IN ('B', 'F'))
 )ENGINE=INNODB;
 
-CREATE TABLE detalles_huspedes(
+CREATE TABLE detalles_huespedes(
 	iddetallehusped		INT AUTO_INCREMENT PRIMARY KEY,
 	idalquiler				INT NOT NULL,
 	idpersona					INT NOT NULL,
