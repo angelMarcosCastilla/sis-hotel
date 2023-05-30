@@ -1,5 +1,6 @@
 import { $, ESTADOS_HABITACION } from "../js/utils.js";
 import Modal from "./modal.js"
+
 const { createApp } = Vue;
 
 const App = createApp({

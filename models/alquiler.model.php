@@ -9,7 +9,34 @@ class Alquiler {
     $this->acceso = $conexion->getConexion();
   }
 
-  public function crearAlquiler($datos){
-    //TODO hace el crear alquiler
+  public function crearAlquiler($datos = []){
+    try {
+      $consulta = $this->acceso->prepare("CALL spu_registrarAlquiler(?,?,?,?,?,?,?,?,?)");
+      $consulta->execute(array(
+        $datos['idPersona'],
+        $datos['idEmpresa'],
+        $datos['idHabitacion'],
+        $datos['idUsuario'],
+        $datos['registroEntrada'],
+        $datos['cantidadDias'],
+        $datos['precio'],
+        $datos['tipoComprobante'],
+        $datos['huespedes']
+      ));
+      return true;
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function buscarCliente($tipocomprobante, $numerocomprobante){
+    try {
+      $consulta = $this->acceso->prepare("CALL buscarclientes(?,?)");
+      $consulta->execute(array($tipocomprobante, $numerocomprobante ));
+      return $consulta->fetch(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+    
   }
 }

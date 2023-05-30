@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS hoteldb;
 CREATE DATABASE hoteldb;
 USE hoteldb;
 
@@ -75,7 +76,7 @@ CREATE TABLE empresas(
 
 CREATE TABLE clientes(
 	idcliente				INT AUTO_INCREMENT PRIMARY KEY,
-	idpersona				INT NOT NULL,
+	idpersona				INT  NULL,
 	idempresa				INT NULL,
 	estado          BIT NOT NULL DEFAULT 1,
 	create_at				 	DATETIME NOT NULL DEFAULT NOW(),

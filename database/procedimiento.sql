@@ -90,10 +90,6 @@ BEGIN
 	SELECT  COUNT(*) AS 'totalAlquiler' FROM alquileres WHERE  DATE(registroentrada) = DATE(NOW());
 END $$
 
-CALL spu_registrarAlquiler(10,'', 6, 1, NOW(), 2, 300, 'B', '10,11');
-
-select * from detalles_huspedes where idalquiler = 4;
-
 DELIMITER $$
 CREATE PROCEDURE spu_registrarAlquiler(
 	IN _idpersona INT,
@@ -145,7 +141,10 @@ BEGIN
 	INSERT INTO alquileres(idhabitacion, idusuario, idcliente, registroentrada, cantidaddias, precio, tipocomprobante, numcomprobante)
 	VALUES(_idhabitacion, _idusuario, @idcliente, _registroentrada, _cantidaddias, _precio, _tipocomprobante,  @numcomprobante);
 	SET @idalquiler = LAST_INSERT_ID();
-
+	
+	-- cambiar estado a la habitacion 
+	UPDATE habitaciones SET estadohabitacion = 'O' WHERE idhabitacion = _idhabitacion;
+	
 	-- INSERTAR PERSONAS EN EL ALQUILER
 	-- VIENE LOS ID SEPARADOS POR COMAS
 	-- VAMOS A RECORRER CON UN WHILE Y SEPARAMOS LOS ID PARA INSERTARLOS
@@ -162,4 +161,17 @@ BEGIN
     INSERT INTO detalles_huespedes(idalquiler, idpersona)
 		VALUES(@idalquiler, elemento);
   END WHILE;
+END $$
+
+DELIMITER $$
+CREATE PROCEDURE buscarclientes(
+IN _tipocomprobante		CHAR(1),
+IN _numerodocumento	VARCHAR(11)
+)
+BEGIN
+	IF _tipocomprobante = 'B' THEN
+		SELECT CONCAT(nombres, ' ' , apellidos) AS 'nombre', idpersona AS 'id', direccion FROM personas WHERE numerodocumento = _numerodocumento;
+	ELSE
+		SELECT nombre, direccion, idempresa AS 'id' FROM empresas WHERE  ruc = _numerodocumento;
+	END IF;
 END $$

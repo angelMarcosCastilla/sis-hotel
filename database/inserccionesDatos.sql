@@ -13,6 +13,12 @@ INSERT INTO personas(nombres, apellidos, tipodocumento, numerodocumento, celular
 ('LUIS', "ALVARADO ROSALES",'DNI','12097865', NULL),
 ('MARBELLA', "CASTAÑEDA YOTUN",'CDE','660978650011', NULL);
 
+INSERT INTO empresas (ruc, nombre, direccion) 
+VALUES
+('12345678912', 'PEPITO SAC', 'En lado mas osucro de la luna'),
+('12345678902', 'SANTIAGO SAC', 'las fosas de las marianas'),
+('12345678910', 'MARCOS SAC', 'Calle del mas allá');
+
 INSERT INTO usuarios(idpersona, nombreusuario, claveacceso, email)
 VALUES (1,'angeluser','$2y$10$XaESoYZS6kBEl6LZy2ilOudXWLpUd7O9GUJL/ie88ALXM3DaP3wb2','angelmarcoscastilla15@gmail.com');
 
@@ -78,9 +84,9 @@ UPDATE habitaciones SET estadohabitacion = 'O' WHERE idhabitacion = 1;
 INSERT INTO clientes(idpersona) VALUES (3);
 INSERT INTO alquileres(idhabitacion, idusuario, idcliente, registroentrada, cantidaddias, precio, tipocomprobante, numcomprobante) VALUES
 (10, 1, 3, NOW(), 2, 90.00, 'B', 'B00000003');
-INSERT INTO clientes(idpersona) VALUES (10);
 INSERT INTO detalles_huespedes(idalquiler, idpersona) VALUES
 (3, 10);
+
 UPDATE habitaciones SET estadohabitacion = 'O' WHERE idhabitacion = 10;
 
 
