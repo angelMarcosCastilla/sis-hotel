@@ -102,25 +102,25 @@
                         <div class="group-input">
                           <div>
                             <label for="tipoComprobante">Tipo Comprobante</label>
-                            <select name="tipoComprobante">
+                            <select name="tipoComprobante" v-model="alquiler.tipocomprobante">
                               <option value="B">Boleta</option>
-                              <option value="B">Factura</option>
+                              <option value="F">Factura</option>
                             </select>
                           </div>
                           <div class="flex-group">
                             <div>
-                              <label for="">Numero Documento</label>
-                              <input type="text" />
+                              <label for="" >Numero Documento</label>
+                              <input type="number" placeholder="🔎 Enter Para Buscar"  v-model="alquiler.numeroDocumento" @keyup.enter="findClient" />
                             </div>
                           </div>
                         </div>
                         <div>
-                          <label for="nombre">Nombre</label>
-                          <input type="text" />
+                          <label for="nombre" >Nombre</label>
+                          <input type="text" :value="alquiler.nombreCliente" disabled />
                         </div>
                         <div>
-                          <label for="nombre">Dirección</label>
-                          <input type="text" />
+                          <label for="nombre" >Dirección</label>
+                          <input type="text" :value="alquiler.direccioncliente" disabled />
                         </div>
                       </fieldset>
                       <!-- fin datos clientes -->
@@ -130,7 +130,7 @@
                         <div class="group-input">
                           <div>
                             <label for="">Fecha Entrada</label>
-                            <input type="date" />
+                            <input type="date" :value="alquiler.registroEntrada" disabled />
                           </div>
                           <div>
                             <label for="">Precio</label>
@@ -140,11 +140,11 @@
                         <div class="group-input">
                           <div>
                             <label for="">Cantidad Dias</label>
-                            <input type="text" />
+                            <input type="text"  v-model="alquiler.cantidadDias"/>
                           </div>
                           <div>
                             <label for="">Total</label>
-                            <input type="text" />
+                            <input type="text" :value="alquiler.cantidadDias ? alquiler.cantidadDias * detalleHabitacion.precio:'' " />
                           </div>
                         </div>
                       </fieldset>
@@ -155,7 +155,7 @@
                         <legend>
                           Registro Huéspedes
                         </legend>
-                        <huespedes-registrar :cantmaxpersona="detalleHabitacion.cantmaxpersona" />
+                        <huespedes-registrar :cantmaxpersona="detalleHabitacion.cantmaxpersona" @add-huesped="addhuesped" />
                       </fieldset>
                     </div>
                     <button type="button" class="buttonRegister" @click="createAlquiler">

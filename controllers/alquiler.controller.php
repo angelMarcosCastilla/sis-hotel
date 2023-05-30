@@ -1,5 +1,6 @@
 <?php
 include_once "../models/alquiler.model.php";
+session_start();
 
 if(isset($_POST["operacion"])){
   $alquiler = new Alquiler();
@@ -9,7 +10,7 @@ if(isset($_POST["operacion"])){
       "idPersona" => $_POST["idPersona"],
       "idEmpresa" => $_POST["idEmpresa"],
       "idHabitacion" => $_POST["idHabitacion"],
-      "idUsuario" => $_POST["idUsuario"],
+      "idUsuario" => $_SESSION["seguridad"]["idusuario"],
       "registroEntrada" => $_POST["registroEntrada"],
       "cantidadDias" => $_POST["cantidadDias"], 
       "precio" => $_POST["precio"], 
@@ -21,12 +22,19 @@ if(isset($_POST["operacion"])){
 
     echo json_encode([
       "success" => $isRegister,
-      "message" => $isRegister ? "Habitación registrada correctamente" : "Error al registrar habitacion"
+      "message" => $isRegister ? "Alquiler registrada correctamente" : "Error al Alquilar habitacion"
     ]);
   }
 
   if($_POST["operacion"] == 'buscarCliente'){
-    $datos= $alquiler->buscarCliente($_POST["tipoComprobante"],$_POST["numeroComprobante"]);
+    $datos= $alquiler->buscarCliente($_POST["tipoComprobante"],$_POST["numeroDocumento"]);
+    echo json_encode([
+      "data" => $datos,
+      "success" => true
+    ]);
+  }
+  if($_POST["operacion"] == 'buscarHuesped'){
+    $datos= $alquiler->buscarHuesped($_POST["numeroDocumento"]);
     echo json_encode([
       "data" => $datos,
       "success" => true

@@ -29,10 +29,20 @@ class Alquiler {
     }
   }
 
-  public function buscarCliente($tipocomprobante, $numerocomprobante){
+  public function buscarCliente($tipocomprobante, $numeroDocumento){
     try {
       $consulta = $this->acceso->prepare("CALL buscarclientes(?,?)");
-      $consulta->execute(array($tipocomprobante, $numerocomprobante ));
+      $consulta->execute(array($tipocomprobante, $numeroDocumento ));
+      return $consulta->fetch(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+    
+  }
+  public function buscarHuesped($numeroDocumento){
+    try {
+      $consulta = $this->acceso->prepare("CALL buscarHuespedes(?)");
+      $consulta->execute(array($numeroDocumento));
       return $consulta->fetch(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
       die($e->getMessage());

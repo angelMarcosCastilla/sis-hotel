@@ -175,3 +175,15 @@ BEGIN
 		SELECT nombre, direccion, idempresa AS 'id' FROM empresas WHERE  ruc = _numerodocumento;
 	END IF;
 END $$
+
+DELIMITER $$
+CREATE PROCEDURE buscarHuespedes(
+IN _numerodocumento	VARCHAR(11)
+)
+BEGIN
+	SELECT  nombres , apellidos, numerodocumento , idpersona FROM personas WHERE numerodocumento = _numerodocumento;
+END $$
+
+CALL buscarclientes('B', '00245540');
+
+SELECT * FROM personas

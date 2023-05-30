@@ -1,5 +1,5 @@
 import { $, ESTADOS_HABITACION } from "../js/utils.js";
-import Modal from "./modal.js"
+import Modal from "./modal.js";
 
 const { createApp } = Vue;
 
@@ -17,35 +17,45 @@ const App = createApp({
         numHabitacion: "",
       },
       detalleHabitacion: null,
+      alquiler: {
+        tipocomprobante: "B",
+        numeroDocumento: "",
+        idEmpresa: "",
+        idpersona: "",
+        nombreCliente: "",
+        direccioncliente: "",
+        registroEntrada: new Date().toISOString().split("T").shift(),
+        cantidadDias:"",
+        detalleshuesped:""
+      },
     };
   },
   methods: {
+    addhuesped(huespedes){
+      console.log(huespedes)
+      const idsHuspedes = huespedes.map(huesped => huesped.idpersona).join(",")
+      this.alquiler.detalleshuesped = idsHuspedes
+      
+    },
     openModal(detalleHabitacion) {
       this.detalleHabitacion = detalleHabitacion;
 
-      if(detalleHabitacion.estadohabitacion === "D"){
-
+      if (detalleHabitacion.estadohabitacion === "D") {
         this.modalRegisterAlquiler.open();
-
-      }else if(detalleHabitacion.estadohabitacion === "O"){
+      } else if (detalleHabitacion.estadohabitacion === "O") {
         this.modalRegistroSalida.open();
-
-      }else {
+      } else {
         Swal.fire({
-          title: 'Are you sure?',
+          title: "Are you sure?",
           text: "You won't be able to revert this!",
-          icon: 'warning',
+          icon: "warning",
           showCancelButton: true,
-          confirmButtonText: 'Si, continuar',
+          confirmButtonText: "Si, continuar",
         }).then((result) => {
           if (result.isConfirmed) {
-            Swal.fire(
-              'Deleted!',
-              'Your file has been deleted.',
-              'success'
-            )
+            Swal.fire("Deleted!", "Your file has been deleted.", "success");
           }
-        })
+        });
       }
     },
 
@@ -53,6 +63,19 @@ const App = createApp({
       this.modalRegisterAlquiler.close();
       this.modalRegistroSalida.close();
       this.detalleHabitacion = null;
+      this.resetDatosAlquiler();
+    },
+
+    resetDatosAlquiler() {
+      this.alquiler.tipocomprobante = "B";
+      this.alquiler.numeroDocumento = "";
+      this.alquiler.idEmpresa = "";
+      this.alquiler.idpersona = "";
+      this.alquiler.nombreCliente = "";
+      this.alquiler.direccioncliente = "";
+      this.alquiler.registroEntrada = "";
+      this.alquiler.cantidadDias = "",
+      this.alquiler.detalleshuesped ="";
     },
 
     resetFilters() {
@@ -63,8 +86,65 @@ const App = createApp({
       };
     },
 
-    async createAlquiler(){
-       /*  const res = await fetch("../controllers/alquiler.controller.php") */
+    async findClient() {
+      if (String(this.alquiler.numeroDocumento).length < 12) {
+        const formData = new URLSearchParams();
+        formData.append("operacion", "buscarCliente");
+        formData.append("tipoComprobante", this.alquiler.tipocomprobante);
+        formData.append("numeroDocumento", this.alquiler.numeroDocumento);
+        fetch("../controllers/alquiler.controller.php", {
+          method: "POST",
+          body: formData,
+        })
+          .then((res) => res.json())
+          .then(({ data }) => {
+            this.alquiler.nombreCliente = data.nombre;
+            this.alquiler.direccioncliente = data.direccion;
+            if (this.alquiler.tipocomprobante === "B") {
+              this.alquiler.idpersona = data.id;
+            } else {
+              this.alquiler.idEmpresa = data.id;
+             
+            }
+          });
+      } else {
+        alert("error me muero", "buscarCliente");
+      }
+    },
+
+    async createAlquiler() {
+      const formData = new FormData();
+      formData.append("operacion","alquilar")
+      formData.append("idPersona",this.alquiler.idperson)
+      formData.append("idEmpresa",this.alquiler.idEmpresa)
+      formData.append("idHabitacion",this.detalleHabitacion.idhabitacion)
+      formData.append("registroEntrada",this.alquiler.registroEntrada)
+      formData.append("cantidadDias",this.alquiler.cantidadDias)
+      formData.append("precio",this.detalleHabitacion.precio)
+      formData.append("tipoComprobante",this.alquiler.tipocomprobante)
+      formData.append("huespedes",this.alquiler.detalleshuesped)
+
+      fetch("../controllers/alquiler.controller.php",{
+        method:"POST",
+        body:formData
+      })
+      .then(res => res.json())
+      .then(data =>{
+        if(data.success){
+          Swal.fire(
+            "Creado!",
+            data.message,
+            "success"
+          ).then(() => {
+            this.getHabitaciones();
+            this.closeModals();
+          });
+         
+        }else{
+          alert("Error PAPIIIIIIIII!")
+        }
+      })
+
     },
 
     async getHabitaciones() {
@@ -88,15 +168,14 @@ const App = createApp({
   },
 
   async mounted() {
-    Promise.all([
-      this.getHabitaciones(),
-      this.getTiposHabitaciones(),
-    ]).then((res) => {
-      $("#loading").style.display = "none";
-      $("#container-vue").style.display = "block";
-      this.modalRegisterAlquiler = new Modal("modal");
-      this.modalRegistroSalida = new Modal("modalRegistroSalida");
-    });
+    Promise.all([this.getHabitaciones(), this.getTiposHabitaciones()]).then(
+      (res) => {
+        $("#loading").style.display = "none";
+        $("#container-vue").style.display = "block";
+        this.modalRegisterAlquiler = new Modal("modal");
+        this.modalRegistroSalida = new Modal("modalRegistroSalida");
+      }
+    );
   },
 
   computed: {
@@ -111,11 +190,10 @@ const App = createApp({
       );
 
       return this.habitaciones.filter((habitacion) => {
-        return filteredValues.every(
-          ([key, value]) => habitacion[key] == value
-        );
+        return filteredValues.every(([key, value]) => habitacion[key] == value);
       });
     },
+    
   },
 });
 
@@ -135,10 +213,10 @@ App.component("habitacion-card", {
     },
     badgeColor() {
       const { estadohabitacion } = this.habitacion;
-      if(estadohabitacion === "D") return "card-estado badge success";
-      if(estadohabitacion === "M") return "card-estado badge warning";
-      if(estadohabitacion === "O") return "card-estado badge danger";
-      return "card-estado badge "
+      if (estadohabitacion === "D") return "card-estado badge success";
+      if (estadohabitacion === "M") return "card-estado badge warning";
+      if (estadohabitacion === "O") return "card-estado badge danger";
+      return "card-estado badge ";
     },
   },
   template: `
@@ -179,33 +257,39 @@ App.component("habitacion-detalle", {
   `,
 });
 
-App.component("huespedes-registrar",{
-  props:["cantmaxpersona"],
-  data(){
-    return{
-      numeroDocumento:"",
-      huespedes:[],
-    }
+App.component("huespedes-registrar", {
+  props: ["cantmaxpersona"],
+  data() {
+    return {
+      numeroDocumento: "",
+      huespedes: [],
+    };
   },
-  methods:{
-    addHusped(){
-      if(this.huespedes.length >= this.cantmaxpersona) return;
-      const huesped = {
-        dni:"asadasdas",
-        nombres:"asdasdasd",
-        apellido:"asdasdas"
-      }
-      this.huespedes.push(huesped);
-      this.numeroDocumento = "";
+  methods: {
+    addHusped() {
+      if (this.huespedes.length >= this.cantmaxpersona) return;
+      const formData = new FormData();
+      formData.append("operacion","buscarHuesped")
+      formData.append("numeroDocumento",this.numeroDocumento )
+      fetch("../controllers/alquiler.controller.php", {
+          method: "POST",
+          body: formData,
+        })
+          .then((res) => res.json())
+          .then(({ data }) => {
+            this.huespedes.push(data);
+            this.$emit("add-huesped", this.huespedes)
+            this.numeroDocumento = "";
+          });
     },
 
-    deleteHusped(dni){
-      const newHusped = this.huespedes.filter(huesped => huesped !== dni)
-      console.log(newHusped)
-      this.huespedes = newHusped
-    }
+    deleteHusped(dni) {
+      const newHusped = this.huespedes.filter((huesped) => huesped.numerodocumento !== dni);
+      console.log(newHusped);
+      this.huespedes = newHusped;
+    },
   },
-  template:`
+  template: `
   <div>
     <div class="agregarHuesped">
       <input type="text" v-model="numeroDocumento" placeholder="N° Documento" />
@@ -223,11 +307,11 @@ App.component("huespedes-registrar",{
         </thead>
         <tbody>
           <tr v-for="(huesped,index) in huespedes" :key="index">
-            <td class="table__body-cell">{{huesped.dni}}</td>
+            <td class="table__body-cell">{{huesped.numerodocumento}}</td>
             <td class="table__body-cell">{{huesped.nombres}}</td>
-            <td class="table__body-cell">{{huesped.apellido}}</td>
+            <td class="table__body-cell">{{huesped.apellidos}}</td>
             <td class="table__body-cell">
-              <button type="button" class="iconButton" @click="deleteHusped(huesped.dni)">x</button>
+              <button type="button" class="iconButton" @click="deleteHusped(huesped.numerodocumento)">x</button>
             </td>
           </tr>
         </tbody>
@@ -235,6 +319,6 @@ App.component("huespedes-registrar",{
     </div>
   </div>
   `,
-})
+});
 
 App.mount("#root");
