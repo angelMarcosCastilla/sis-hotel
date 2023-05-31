@@ -11,13 +11,34 @@ INSERT INTO personas(nombres, apellidos, tipodocumento, numerodocumento, celular
 ('SOLYMAR', 'DAVALOS SARAVIA','DNI', '99245540', NULL),
 ('AMBAR', 'CORDOBA TASAYCO', 'DNI','67245540', NULL),
 ('LUIS', "ALVARADO ROSALES",'DNI','12097865', NULL),
-('MARBELLA', "CASTAÑEDA YOTUN",'CDE','66097865', NULL);
+('MARBELLA', "CASTAÑEDA YOTUN",'CDE','66097865', NULL),
+('JUAN', 'PÉREZ', 'DNI', '12345678', NULL),
+('MARÍA', 'GÓMEZ', 'DNI', '87654321', NULL),
+('CARLOS', 'LÓPEZ', 'DNI', '23456709', NULL),
+('ANA', 'MARTÍNEZ', 'DNI', '98765402', NULL),
+('LUIS', 'HERNÁNDEZ', 'DNI', '34567800', NULL),
+('LAURA', 'RODRÍGUEZ', 'DNI', '09876503', NULL),
+('PEDRO', 'SÁNCHEZ', 'DNI', '45678001', NULL),
+('SOFÍA', 'GONZÁLEZ', 'DNI', '21090765', NULL),
+('MIGUEL', 'TORRES', 'DNI', '56789012', NULL),
+('LUCÍA', 'RAMÍREZ', 'DNI', '10987654', NULL),
+('RAÚL', 'CRUZ', 'DNI', '98765432', NULL),
+('ANA', 'PÉREZ', 'DNI', '23456789', NULL),
+('JAVIER', 'RODRÍGUEZ', 'DNI', '34567890', NULL),
+('PAULA', 'GÓMEZ', 'DNI', '09876543', NULL),
+('OSCAR', 'SÁNCHEZ', 'DNI', '45678901', NULL),
+('ALICIA', 'TORRES', 'DNI', '21098765', NULL);
 
 INSERT INTO empresas (ruc, nombre, direccion) 
 VALUES
 ('12345678912', 'PEPITO SAC', 'En lado mas osucro de la luna'),
 ('12345678902', 'SANTIAGO SAC', 'las fosas de las marianas'),
-('12345678910', 'MARCOS SAC', 'Calle del mas allá');
+('12345678910', 'MARCOS SAC', 'Calle del mas allá'),
+('12345678913', 'ELLA NO TE AMA SAC', 'Calle el corazon roto'),
+('12345678914', 'EMPRESA B', 'Avenida Secundaria 456'),
+('12345678915', 'EMPRESA C', 'Calle Central 789'),
+('12345678916', 'EMPRESA D', 'Avenida Principal 987'),
+('12345678917', 'EMPRESA E', 'Calle Secundaria 654');
 
 INSERT INTO usuarios(idpersona, nombreusuario, claveacceso, email)
 VALUES (1,'angeluser','$2y$10$XaESoYZS6kBEl6LZy2ilOudXWLpUd7O9GUJL/ie88ALXM3DaP3wb2','angelmarcoscastilla15@gmail.com');
@@ -86,8 +107,99 @@ INSERT INTO alquileres(idhabitacion, idusuario, idcliente, registroentrada, cant
 (10, 1, 3, NOW(), 2, 90.00, 'B', 'B00000003');
 INSERT INTO detalles_huespedes(idalquiler, idpersona) VALUES
 (3, 10);
-
 UPDATE habitaciones SET estadohabitacion = 'O' WHERE idhabitacion = 10;
+
+/*Hacer inserciones pero restarles un dia al metodo NOW()*/
+-- alquiler habitacion 2
+INSERT INTO clientes(idpersona) VALUES (4);
+INSERT INTO alquileres(idhabitacion, idusuario, idcliente, registroentrada, cantidaddias, precio, tipocomprobante, numcomprobante) VALUES
+(2, 1, 4, NOW() - INTERVAL 1 DAY, 2, 90.00, 'B', 'B00000004');
+INSERT INTO detalles_huespedes(idalquiler, idpersona) VALUES
+(4, 11);
+UPDATE habitaciones SET estadohabitacion = 'O' WHERE idhabitacion = 2;
+
+-- alquiler habitacion 11
+INSERT INTO clientes(idpersona) VALUES (5);
+INSERT INTO alquileres(idhabitacion, idusuario, idcliente, registroentrada, cantidaddias, precio, tipocomprobante, numcomprobante) VALUES
+(11, 1, 5, NOW() - INTERVAL 1 DAY, 2, 90.00, 'B', 'B00000005');
+INSERT INTO detalles_huespedes(idalquiler, idpersona) VALUES
+(5, 12);
+UPDATE habitaciones SET estadohabitacion = 'O' WHERE idhabitacion = 11;
+
+/*Inseercion con 2 dias atras*/
+-- alquiler habitacion 3
+INSERT INTO clientes(idpersona) VALUES (6);
+INSERT INTO alquileres(idhabitacion, idusuario, idcliente, registroentrada, cantidaddias, precio, tipocomprobante, numcomprobante) VALUES
+(3, 1, 6, NOW() - INTERVAL 2 DAY, 4, 90.00, 'B', 'B00000006');
+INSERT INTO detalles_huespedes(idalquiler, idpersona) VALUES
+(6, 13);
+UPDATE habitaciones SET estadohabitacion = 'O' WHERE idhabitacion = 3;
+
+-- alquiler habitacion 12
+INSERT INTO clientes(idpersona) VALUES (7);
+INSERT INTO alquileres(idhabitacion, idusuario, idcliente, registroentrada, cantidaddias, precio, tipocomprobante, numcomprobante) VALUES
+(12, 1, 7, NOW() - INTERVAL 2 DAY, 2, 90.00, 'B', 'B00000007');
+
+
+/*Inserter alquileres pasados el id del cliente varia del 1 al 5*/
+-- alquiler habitacion 4
+INSERT INTO alquileres(idhabitacion, idusuario, idcliente, registroentrada, cantidaddias, precio, tipocomprobante, numcomprobante, registrosalida) VALUES
+(4, 1, 1, NOW() - INTERVAL 3 DAY, 2, 90.00, 'B', 'B00000008', NOW() - INTERVAL 1 DAY);
+INSERT INTO detalles_huespedes(idalquiler, idpersona) VALUES
+(7, 1);
+
+-- alquiler habitacion 13
+INSERT INTO alquileres(idhabitacion, idusuario, idcliente, registroentrada, cantidaddias, precio, tipocomprobante, numcomprobante, registrosalida) VALUES
+(13, 1, 2, NOW() - INTERVAL 3 DAY, 2, 90.00, 'B', 'B00000009', NOW() - INTERVAL 1 DAY);
+INSERT INTO detalles_huespedes(idalquiler, idpersona) VALUES
+(8, 2);
+
+-- alquiler habitacion 5
+INSERT INTO alquileres(idhabitacion, idusuario, idcliente, registroentrada, cantidaddias, precio, tipocomprobante, numcomprobante, registrosalida) VALUES
+(5, 1, 3, NOW() - INTERVAL 4 DAY, 2, 90.00, 'B', 'B00000010', NOW() - INTERVAL 2 DAY);
+INSERT INTO detalles_huespedes(idalquiler, idpersona) VALUES
+(9, 3);
+
+-- alquiler habitacion 14
+INSERT INTO alquileres(idhabitacion, idusuario, idcliente, registroentrada, cantidaddias, precio, tipocomprobante, numcomprobante, registrosalida) VALUES
+(14, 1, 4, NOW() - INTERVAL 4 DAY, 2, 90.00, 'B', 'B00000011', NOW() - INTERVAL 2 DAY);
+INSERT INTO detalles_huespedes(idalquiler, idpersona) VALUES
+(10, 4);
+
+-- alquiler habitacion 6
+INSERT INTO alquileres(idhabitacion, idusuario, idcliente, registroentrada, cantidaddias, precio, tipocomprobante, numcomprobante, registrosalida) VALUES
+(6, 1, 5, NOW() - INTERVAL 5 DAY, 2, 90.00, 'B', 'B00000012', NOW() - INTERVAL 3 DAY);
+INSERT INTO detalles_huespedes(idalquiler, idpersona) VALUES
+(11, 5);
+
+-- alquiler habitacion 15
+INSERT INTO alquileres(idhabitacion, idusuario, idcliente, registroentrada, cantidaddias, precio, tipocomprobante, numcomprobante, registrosalida) VALUES
+(15, 1, 2, NOW() - INTERVAL 5 DAY, 2, 90.00, 'B', 'B00000013', NOW() - INTERVAL 3 DAY);
+INSERT INTO detalles_huespedes(idalquiler, idpersona) VALUES
+(12, 2);
+
+-- alquiler habitacion 7
+INSERT INTO alquileres(idhabitacion, idusuario, idcliente, registroentrada, cantidaddias, precio, tipocomprobante, numcomprobante, registrosalida) VALUES
+(7, 1, 3, NOW() - INTERVAL 6 DAY, 2, 90.00, 'B', 'B00000014', NOW() - INTERVAL 4 DAY);
+INSERT INTO detalles_huespedes(idalquiler, idpersona) VALUES
+(13, 3);
+
+-- alquiler habitacion 16
+INSERT INTO alquileres(idhabitacion, idusuario, idcliente, registroentrada, cantidaddias, precio, tipocomprobante, numcomprobante, registrosalida) VALUES
+(16, 1, 4, NOW() - INTERVAL 6 DAY, 2, 90.00, 'B', 'B00000015', NOW() - INTERVAL 4 DAY);
+INSERT INTO detalles_huespedes(idalquiler, idpersona) VALUES
+(14, 4);
+
+-- alquiler habitacion 8
+INSERT INTO alquileres(idhabitacion, idusuario, idcliente, registroentrada, cantidaddias, precio, tipocomprobante, numcomprobante, registrosalida) VALUES
+(8, 1, 5, NOW() - INTERVAL 7 DAY, 2, 90.00, 'B', 'B00000016', NOW() - INTERVAL 5 DAY);
+INSERT INTO detalles_huespedes(idalquiler, idpersona) VALUES
+(15, 5);
+
+
+
+
+
 
 
 UPDATE habitaciones SET estadohabitacion = 'M' WHERE idhabitacion = 5;
