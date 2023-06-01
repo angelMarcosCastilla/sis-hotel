@@ -125,7 +125,6 @@ INSERT INTO detalles_huespedes(idalquiler, idpersona) VALUES
 (5, 12);
 UPDATE habitaciones SET estadohabitacion = 'O' WHERE idhabitacion = 11;
 
-
 /*Inseercion con 2 dias atras*/
 -- alquiler habitacion 3
 INSERT INTO clientes(idpersona) VALUES (6);
@@ -207,7 +206,7 @@ VALUES (18, 1, 4, NOW() - INTERVAL 5 DAY, 2, 90.00, 'B', 'B00000019', NOW() - IN
 INSERT INTO detalles_huespedes(idalquiler, idpersona) VALUES
 (17, 4);
 
-
-
 UPDATE habitaciones SET estadohabitacion = 'M' WHERE idhabitacion = 5;
-
+UPDATE habitaciones SET estadohabitacion = 'M' WHERE idhabitacion = 14;
+UPDATE habitaciones SET estadohabitacion = 'M' WHERE idhabitacion = 19;
+UPDATE habitaciones SET estadohabitacion = 'M' WHERE idhabitacion = 29;

@@ -184,6 +184,66 @@ BEGIN
 	SELECT  nombres , apellidos, numerodocumento , idpersona FROM personas WHERE numerodocumento = _numerodocumento;
 END $$
 
+DELIMITER $$
+CREATE PROCEDURE spu_detalle_alquiler(IN _idhabitacion  INT)
+BEGIN
+	SELECT alquileres.idalquiler, alquileres.fechaemision, alquileres.registroentrada,
+    alquileres.cantidaddias, alquileres.tipocomprobante, alquileres.numcomprobante, 
+	alquileres.precio * alquileres.cantidaddias AS 'total'
+	FROM alquileres 
+    INNER JOIN habitaciones ON habitaciones.idhabitacion = alquileres.idhabitacion
+    WHERE alquileres.idhabitacion = _idhabitacion AND alquileres.registrosalida IS NULL;
+END $$
+
+DELIMITER $$
+CREATE PROCEDURE spu_obtener_cliente(IN _idhabitacion INT)
+BEGIN
+	DECLARE _idpersona INT;
+	DECLARE _idempresa INT;
+	DECLARE _cliente INT;
+
+	/*obtenemos el id del alquiler dependiendo de el _idhabitacion*/
+	SELECT idcliente INTO  _cliente FROM alquileres WHERE idhabitacion = _idhabitacion AND registrosalida IS NULL;
+	
+	SELECT idempresa, idpersona
+    INTO _idempresa, _idpersona
+	FROM clientes WHERE  idcliente =  _cliente;
+
+	IF _idpersona IS NOT NULL THEN
+		SELECT CONCAT(personas.nombres, ' ', personas.apellidos) AS 'nombre', personas.numerodocumento AS 'numerodocumento', personas.direccion AS 'direccion'
+		FROM personas
+		WHERE idpersona = _idpersona;
+	ELSE
+		SELECT empresas.nombre AS 'nombre', empresas.ruc AS 'numerodocumento', empresas.direccion AS 'direccion'
+		FROM empresas
+		WHERE idempresa = _idempresa;
+	END IF;
+END $$
+
+DELIMITER $$
+CREATE PROCEDURE spu_detalle_huesped_alquiler(IN _idhabitacion  INT)
+BEGIN
+	DECLARE _idalquiler INT;
+	SELECT idalquiler INTO  _idalquiler FROM alquileres WHERE idhabitacion = _idhabitacion AND registrosalida IS NULL;
+	
+	SELECT personas.numerodocumento, CONCAT(personas.nombres, ' ', personas.apellidos)  as 'nombres'
+	FROM detalles_huespedes
+	INNER JOIN personas ON detalles_huespedes.idpersona = personas.idpersona
+  WHERE idalquiler = _idalquiler;
+END $$
+
+DELIMITER $$
+CREATE PROCEDURE spu_registrarSalida(IN _alquiler INT, IN _idhabitacion INT)
+BEGIN
+	UPDATE alquileres SET registrosalida = NOW(), update_at =NOW()  WHERE idalquiler = _alquiler;
+	UPDATE habitaciones SET estadohabitacion = 'D' WHERE idhabitacion = _idhabitacion;
+END $$
+
+DELIMITER $$
+CREATE PROCEDURE spu_actualizarHabitacionADisponible(IN _idhabitacion INT)
+BEGIN
+	UPDATE habitaciones SET estadohabitacion = 'D' WHERE idhabitacion = _idhabitacion;
+END $$
 
 -- REPORTES
 -- 1) obtener el total de habitaciones alquiladias el los ultimos 7 dias

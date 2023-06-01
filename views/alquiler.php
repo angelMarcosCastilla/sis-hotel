@@ -171,7 +171,7 @@
 
         <!-- modal registro salida -->
         <div class="container-modal" id="modalRegistroSalida">
-          <div class="content-modal">
+          <div class="content-modal modalRegistroSalida-content">
             <button class="iconButton" @click="closeModals">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -181,7 +181,35 @@
               </svg>
             </button>
             <div>
-              <h1>registro Salida</h1>
+            <div v-if="detalleHabitacion && detalleAlquiler" class="detalleHabitacion">
+                <div class="registrarHabitacion-left">
+                  <habitacion-detalle :habitacion="detalleHabitacion"></habitacion-detalle> 
+                </div>
+                <div class="registrarHabitacion-right">
+                  <div class="container-modalRegistroSalida">
+                  <article>
+                    <h2>Cliente</h2>
+                    <p>Nombres: {{detalleAlquiler.cliente.nombre}}</p>
+                    <p>N° documento: {{detalleAlquiler.cliente.numerodocumento}}</p>
+                  </article>
+                  <article>
+                    <h2>Alquiler</h2>
+                    <p>Fecha Entrada: {{detalleAlquiler.alquiler.registroentrada.split(" ").shift()}}</p>
+                    <p>Cantidad Dias: {{detalleAlquiler.alquiler.cantidaddias}}</p>
+                    <p>Total: {{detalleAlquiler.alquiler.total}}</p>
+                  </article>
+                  <article>
+                    <h2>huespedes</h2>
+                    <ul>
+                      <li v-for="huesped in detalleAlquiler.huespedes">
+                        {{huesped.nombres}} {{huesped.numerodocumento}}
+                      </li>
+                    </ul>
+                  </article>
+                  <button style="margin-top:1rem" @click="registerExit">Registrar Salida</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

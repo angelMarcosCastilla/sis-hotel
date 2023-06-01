@@ -47,6 +47,55 @@ class Alquiler {
     } catch (Exception $e) {
       die($e->getMessage());
     }
-    
+  }
+
+  public function obtenerDetallesAlquiler($idHabitacion){
+    try{
+      $consulta = $this->acceso->prepare("CALL spu_detalle_alquiler(?)");
+      $consulta->execute(array($idHabitacion));
+      return $consulta->fetch(PDO::FETCH_ASSOC);
+    }catch(Exception $e){
+      die($e->getMessage());
+    }
+  }
+
+  public function obtenerDetallesHuespedes($idqluiler){
+    try{
+      $consulta = $this->acceso->prepare("CALL spu_detalle_huesped_alquiler(?)");
+      $consulta->execute(array($idqluiler));
+      return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    }catch(Exception $e){
+      die($e->getMessage());
+    }
+  }
+
+  public function obtenercliente($alquiler){
+    try{
+      $consulta = $this->acceso->prepare("CALL spu_obtener_cliente(?)");
+      $consulta->execute(array($alquiler));
+      return $consulta->fetch(PDO::FETCH_ASSOC);
+    }catch(Exception $e){
+      die($e->getMessage());
+    }
+  }
+
+  public function registrarSalida($idalquiler, $idHabitacion){
+    try{
+      $consulta = $this->acceso->prepare("CALL spu_registrarSalida(?, ?)");
+      $consulta->execute(array($idalquiler, $idHabitacion));
+      return true;
+    }catch(Exception $e){
+      die($e->getMessage());
+    }
+  }
+
+  public function actualizarEstadoADisponible($idHabitacion){
+    try{
+      $consulta = $this->acceso->prepare("CALL spu_actualizarHabitacionADisponible(?)");
+      $consulta->execute(array($idHabitacion));
+      return true;
+    }catch(Exception $e){
+      die($e->getMessage());
+    }
   }
 }

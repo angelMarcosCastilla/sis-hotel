@@ -25,35 +25,57 @@ const App = createApp({
         nombreCliente: "",
         direccioncliente: "",
         registroEntrada: new Date().toISOString().split("T").shift(),
-        cantidadDias:"",
-        detalleshuesped:""
+        cantidadDias: "",
+        detalleshuesped: "",
       },
+      detalleAlquiler: null,
     };
   },
   methods: {
-    addhuesped(huespedes){
-      console.log(huespedes)
-      const idsHuspedes = huespedes.map(huesped => huesped.idpersona).join(",")
-      this.alquiler.detalleshuesped = idsHuspedes
-      
+    addhuesped(huespedes) {
+      console.log(huespedes);
+      const idsHuspedes = huespedes
+        .map((huesped) => huesped.idpersona)
+        .join(",");
+      this.alquiler.detalleshuesped = idsHuspedes;
     },
+
     openModal(detalleHabitacion) {
       this.detalleHabitacion = detalleHabitacion;
-
       if (detalleHabitacion.estadohabitacion === "D") {
         this.modalRegisterAlquiler.open();
       } else if (detalleHabitacion.estadohabitacion === "O") {
         this.modalRegistroSalida.open();
+        this.getDetailsAlquiler(detalleHabitacion.idhabitacion).then((res) => {
+          this.detalleAlquiler = res;
+        });
       } else {
         Swal.fire({
-          title: "Are you sure?",
-          text: "You won't be able to revert this!",
+          title: "¿Deseas Actualizar el estado de la habitación ",
           icon: "warning",
           showCancelButton: true,
           confirmButtonText: "Si, continuar",
         }).then((result) => {
           if (result.isConfirmed) {
-            Swal.fire("Deleted!", "Your file has been deleted.", "success");
+            fetch("../controllers/alquiler.controller.php", {
+              method: "POST",
+              body: new URLSearchParams({
+                operacion: "actualizarHabitacionADisponible",
+                idHabitacion: detalleHabitacion.idhabitacion,
+              }),
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                if (data.success) {
+                  Swal.fire("Actualizado!", data.message, "success").then(
+                    () => {
+                      this.getHabitaciones();
+                    }
+                  );
+                } else {
+                  alert("Error ");
+                }
+              });
           }
         });
       }
@@ -74,8 +96,7 @@ const App = createApp({
       this.alquiler.nombreCliente = "";
       this.alquiler.direccioncliente = "";
       this.alquiler.registroEntrada = "";
-      this.alquiler.cantidadDias = "",
-      this.alquiler.detalleshuesped ="";
+      (this.alquiler.cantidadDias = ""), (this.alquiler.detalleshuesped = "");
     },
 
     resetFilters() {
@@ -84,6 +105,18 @@ const App = createApp({
         idtipohabitacion: "",
         numHabitacion: "",
       };
+    },
+
+    async getDetailsAlquiler(idHabitacion) {
+      const formData = new URLSearchParams();
+      formData.append("operacion", "ObteberDetalleAlquiler");
+      formData.append("idHabitacion", idHabitacion);
+      const res = await fetch("../controllers/alquiler.controller.php", {
+        method: "POST",
+        body: formData,
+      });
+      const { data } = await res.json();
+      return data;
     },
 
     async findClient() {
@@ -104,7 +137,6 @@ const App = createApp({
               this.alquiler.idpersona = data.id;
             } else {
               this.alquiler.idEmpresa = data.id;
-             
             }
           });
       } else {
@@ -114,37 +146,31 @@ const App = createApp({
 
     async createAlquiler() {
       const formData = new FormData();
-      formData.append("operacion","alquilar")
-      formData.append("idPersona",this.alquiler.idperson)
-      formData.append("idEmpresa",this.alquiler.idEmpresa)
-      formData.append("idHabitacion",this.detalleHabitacion.idhabitacion)
-      formData.append("registroEntrada",this.alquiler.registroEntrada)
-      formData.append("cantidadDias",this.alquiler.cantidadDias)
-      formData.append("precio",this.detalleHabitacion.precio)
-      formData.append("tipoComprobante",this.alquiler.tipocomprobante)
-      formData.append("huespedes",this.alquiler.detalleshuesped)
+      formData.append("operacion", "alquilar");
+      formData.append("idPersona", this.alquiler.idpersona);
+      formData.append("idEmpresa", this.alquiler.idEmpresa);
+      formData.append("idHabitacion", this.detalleHabitacion.idhabitacion);
+      formData.append("registroEntrada", this.alquiler.registroEntrada);
+      formData.append("cantidadDias", this.alquiler.cantidadDias);
+      formData.append("precio", this.detalleHabitacion.precio);
+      formData.append("tipoComprobante", this.alquiler.tipocomprobante);
+      formData.append("huespedes", this.alquiler.detalleshuesped);
 
-      fetch("../controllers/alquiler.controller.php",{
-        method:"POST",
-        body:formData
+      fetch("../controllers/alquiler.controller.php", {
+        method: "POST",
+        body: formData,
       })
-      .then(res => res.json())
-      .then(data =>{
-        if(data.success){
-          Swal.fire(
-            "Creado!",
-            data.message,
-            "success"
-          ).then(() => {
-            this.getHabitaciones();
-            this.closeModals();
-          });
-         
-        }else{
-          alert("Error PAPIIIIIIIII!")
-        }
-      })
-
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            Swal.fire("Creado!", data.message, "success").then(() => {
+              this.getHabitaciones();
+              this.closeModals();
+            });
+          } else {
+            alert("Error PAPIIIIIIIII!");
+          }
+        });
     },
 
     async getHabitaciones() {
@@ -164,6 +190,34 @@ const App = createApp({
       );
       const { data } = await response.json();
       this.tiposHabitaciones = data;
+    },
+
+    async registerExit() {
+      const body = new URLSearchParams({
+        operacion: "registrarSalida",
+        idHabitacion: this.detalleHabitacion.idhabitacion,
+        idAlquiler: this.detalleAlquiler.alquiler.idalquiler,
+      });
+      try {
+        const res = await fetch("../controllers/alquiler.controller.php", {
+          method: "POST",
+          body,
+        });
+        const { success, message } = await res.json();
+        if (success) {
+          Swal.fire("Correcto!", message, "success").then(() => {
+            this.getHabitaciones();
+            this.closeModals();
+          });
+        } else {
+          Swal.fire("Error!", message, "error").then(() => {
+            this.getHabitaciones();
+            this.closeModals();
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 
@@ -193,7 +247,6 @@ const App = createApp({
         return filteredValues.every(([key, value]) => habitacion[key] == value);
       });
     },
-    
   },
 });
 
@@ -269,22 +322,24 @@ App.component("huespedes-registrar", {
     addHusped() {
       if (this.huespedes.length >= this.cantmaxpersona) return;
       const formData = new FormData();
-      formData.append("operacion","buscarHuesped")
-      formData.append("numeroDocumento",this.numeroDocumento )
+      formData.append("operacion", "buscarHuesped");
+      formData.append("numeroDocumento", this.numeroDocumento);
       fetch("../controllers/alquiler.controller.php", {
-          method: "POST",
-          body: formData,
-        })
-          .then((res) => res.json())
-          .then(({ data }) => {
-            this.huespedes.push(data);
-            this.$emit("add-huesped", this.huespedes)
-            this.numeroDocumento = "";
-          });
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then(({ data }) => {
+          this.huespedes.push(data);
+          this.$emit("add-huesped", this.huespedes);
+          this.numeroDocumento = "";
+        });
     },
 
     deleteHusped(dni) {
-      const newHusped = this.huespedes.filter((huesped) => huesped.numerodocumento !== dni);
+      const newHusped = this.huespedes.filter(
+        (huesped) => huesped.numerodocumento !== dni
+      );
       console.log(newHusped);
       this.huespedes = newHusped;
     },

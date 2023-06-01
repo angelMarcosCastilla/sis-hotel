@@ -41,4 +41,34 @@ if(isset($_POST["operacion"])){
     ]);
   }
   
+  if($_POST["operacion"] == "ObteberDetalleAlquiler"){
+    $datos =  [
+      "data" => [
+        "alquiler" => [],
+        "huespedes" => [],
+        "cliente" => []
+      ],
+      "success" => true
+    ];
+    $datos["data"]["alquiler"] = $alquiler->obtenerDetallesAlquiler($_POST["idHabitacion"]);
+    $datos["data"]["huespedes"] = $alquiler->obtenerDetallesHuespedes($_POST["idHabitacion"]);
+    $datos["data"]["cliente"] = $alquiler->obtenercliente($_POST["idHabitacion"]);
+    echo json_encode($datos);
+  }
+
+  if($_POST["operacion"] == "registrarSalida"){
+    $isRegister = $alquiler->registrarSalida($_POST["idAlquiler"], $_POST["idHabitacion"]);
+    echo json_encode([
+      "success" => $isRegister,
+      "message" => $isRegister ? "Salida registrada correctamente" : "Error al registrar salida"
+    ]);
+  }
+  
+  if($_POST["operacion"] == "actualizarHabitacionADisponible"){
+    $isRegister = $alquiler->actualizarEstadoADisponible( $_POST["idHabitacion"]);
+    echo json_encode([
+      "success" => $isRegister,
+      "message" => $isRegister ? "Salida registrada correctamente" : "Error al registrar salida"
+    ]);
+  }
 }
