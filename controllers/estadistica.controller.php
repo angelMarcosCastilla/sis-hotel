@@ -19,5 +19,19 @@ if(isset($_GET["operacion"])){
     ]);
   }
 
-  
+  if($_GET["operacion"] == "obtenerAlquiladasEnlaUltimaSemana"){
+    $data = $estadistica->obtenerAlquiladasEnlaUltimaSemana();
+    echo json_encode([
+      "data" => $data,
+      "success" => true
+    ]);
+  }
+
+  if($_GET["operacion"] == "tipoHabitacionMasAlquiladas"){
+    $data = $estadistica->tipoHabitacionMasAlquiladas();
+    echo json_encode([
+      "data" => $data,
+      "success" => true
+    ]);
+  }
 }

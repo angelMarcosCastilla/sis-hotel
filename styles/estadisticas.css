@@ -8,11 +8,26 @@
   flex: 1;
 }
 
+canvas {
+  object-fit: 1/1;
+}
+
+@media screen and (max-width: 768px) {
+  .container-grafica {
+    flex-direction: column;
+    margin-bottom: 2rem;
+  }
+  .grafica-item {
+    justify-self: center;
+  }
+}
+  
 .card-Detalles {
   display: flex;
   justify-content: space-between;
   gap: 2rem;
   margin-bottom: 1rem;
+  height: auto;
 }
 
 .card-Detalles>article {

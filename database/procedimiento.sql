@@ -184,6 +184,23 @@ BEGIN
 	SELECT  nombres , apellidos, numerodocumento , idpersona FROM personas WHERE numerodocumento = _numerodocumento;
 END $$
 
-CALL buscarclientes('B', '00245540');
 
-SELECT * FROM personas
+-- REPORTES
+-- 1) obtener el total de habitaciones alquiladias el los ultimos 7 dias
+DELIMITER $$
+CREATE PROCEDURE spu_habitacionesalquiladasultimos7dias()
+BEGIN
+	SELECT DATE(registroentrada) AS 'fecha', COUNT(*) AS 'total' FROM alquileres
+	WHERE DATE(registroentrada) BETWEEN DATE(NOW()) - INTERVAL 7 DAY AND DATE(NOW())
+	GROUP BY DATE(registroentrada); 
+END $$
+
+-- 2) tipos de habitaciones mas alquiladas grafica el tipo y el total
+DELIMITER $$
+CREATE PROCEDURE spu_tipohabitacionmasalquilada()
+BEGIN
+	SELECT tipo_habitaciones.nombre, COUNT(*) AS 'total' FROM alquileres 
+	INNER JOIN habitaciones  ON alquileres.idhabitacion = habitaciones.idhabitacion
+	INNER JOIN tipo_habitaciones  ON habitaciones.idtipohabitacion = tipo_habitaciones.idtipohabitacion
+	GROUP BY tipo_habitaciones.nombre;
+END $$

@@ -16,11 +16,10 @@
   <main>
     <?php include_once "../compents/haeader.php" ?>
     <div class="card-Detalles" id="cardDetalles">
-      
     </div>
     <div class="container-grafica">
       <div class="grafica-item">
-          <canvas id="grafico1"></canvas>
+        <canvas id="grafico1"></canvas>
       </div>
       <div class="grafica-item">
         <canvas id="grafico2"></canvas>

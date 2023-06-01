@@ -33,4 +33,24 @@ class Estadistica
 			die($e->getMessage());
 		}
 	}
+
+	public function obtenerAlquiladasEnlaUltimaSemana(){
+		try {
+			$consulta = $this->acceso->prepare("CALL spu_habitacionesalquiladasultimos7dias()");
+			$consulta->execute();
+			return $consulta->fetchAll(PDO::FETCH_ASSOC);
+		} catch (Exception $e) {
+			die($e->getMessage());
+		}
+	}
+
+	public function tipoHabitacionMasAlquiladas(){
+		try {
+			$consulta = $this->acceso->prepare("CALL spu_tipohabitacionmasalquilada()");
+			$consulta->execute();
+			return $consulta->fetchAll(PDO::FETCH_ASSOC);
+		} catch (Exception $e) {
+			die($e->getMessage());
+		}
+	}
 }
