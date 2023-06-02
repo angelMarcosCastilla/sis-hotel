@@ -264,3 +264,24 @@ BEGIN
 	INNER JOIN tipo_habitaciones  ON habitaciones.idtipohabitacion = tipo_habitaciones.idtipohabitacion
 	GROUP BY tipo_habitaciones.nombre;
 END $$
+
+-- 3 reporte de los alquuileres entre dos fechas que cuente el inico y fin tambien
+DELIMITER $$
+CREATE PROCEDURE spu_alquileresentrefechas(IN _fecha1 DATE, IN _fecha2 DATE)
+BEGIN
+	SELECT habitaciones.numHabitacion, tipo_habitaciones.nombre,
+    alquileres.registroentrada, alquileres.registrosalida,
+	IF(personas.nombres IS NULL, empresas.nombre, CONCAT(personas.nombres, ' ', personas.apellidos)) AS 'cliente',
+    alquileres.tipocomprobante, alquileres.cantidaddias * alquileres.precio as 'total'
+	FROM alquileres
+    INNER JOIN clientes on clientes.idcliente = alquileres.idcliente
+    LEFT JOIN personas on personas.idpersona = clientes.idpersona
+    LEFT JOIN empresas ON clientes.idempresa = empresas.idempresa
+    INNER JOIN habitaciones on habitaciones.idhabitacion = alquileres.idhabitacion
+    INNER JOIN tipo_habitaciones on habitaciones.idtipohabitacion = tipo_habitaciones.idtipohabitacion
+	WHERE  DATE(alquileres.registroentrada) BETWEEN _fecha1 AND _fecha2  ;
+END $$
+
+call spu_alquileresentrefechas('2023-05-31', '2023-06-01');
+
+select * from alquileres
