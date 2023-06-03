@@ -20,3 +20,15 @@ div:has(button.btnBuscar){
   justify-content: flex-end;
   gap: 10px;
 }
+
+.enlace{
+  text-decoration: none;
+  color: var(--red-200);
+  display: flex;
+  align-items: center;
+}
+
+.enlace:hover{
+  color: var(--red-300);
+  text-decoration: underline;
+}

@@ -283,3 +283,15 @@ BEGIN
 END $$
 
 call spu_alquileresentrefechas('2023-05-31', '2023-06-02');
+
+-- 4) reporte de las habitaciones mas alquiladas
+-- AGRUPAR POR ID DE HABITACION 
+DELIMITER $$
+CREATE PROCEDURE spu_habitacionesmasalquiladas()
+BEGIN
+	SELECT habitaciones.numHabitacion, tipo_habitaciones.nombre as 'tipo', count(*) as total FROM alquileres
+		INNER JOIN habitaciones ON habitaciones.idhabitacion = alquileres.idhabitacion
+		INNER JOIN tipo_habitaciones ON tipo_habitaciones.idtipohabitacion = habitaciones.idtipohabitacion
+		GROUP BY habitaciones.idhabitacion
+		ORDER BY COUNT(*) DESC;
+END $$

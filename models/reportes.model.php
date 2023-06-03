@@ -21,4 +21,14 @@ class Reporte
       die($e->getMessage());
     }
   }
+
+  public function habitacionesMasAlquiladas(){
+    try{
+      $consulta = $this->acceso->prepare("CALL spu_habitacionesmasalquiladas()");
+      $consulta->execute();
+      return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    }catch(Exception $e){
+      die($e->getMessage());
+    }
+  }
 }
