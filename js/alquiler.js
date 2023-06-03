@@ -1,4 +1,4 @@
-import { $, ESTADOS_HABITACION } from "../js/utils.js";
+import { $, ESTADOS_HABITACION, getCurrentDate } from "../js/utils.js";
 import Modal from "./modal.js";
 
 const { createApp } = Vue;
@@ -24,7 +24,7 @@ const App = createApp({
         idpersona: "",
         nombreCliente: "",
         direccioncliente: "",
-        registroEntrada: new Date().toISOString().split("T").shift(),
+        registroEntrada:getCurrentDate(),
         cantidadDias: "",
         detalleshuesped: "",
       },
@@ -95,8 +95,9 @@ const App = createApp({
       this.alquiler.idpersona = "";
       this.alquiler.nombreCliente = "";
       this.alquiler.direccioncliente = "";
-      this.alquiler.registroEntrada = "";
-      (this.alquiler.cantidadDias = ""), (this.alquiler.detalleshuesped = "");
+      this.alquiler.registroEntrada = getCurrentDate();
+      this.alquiler.cantidadDias = "",
+      this.alquiler.detalleshuesped = "";
     },
 
     resetFilters() {

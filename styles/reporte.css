@@ -1,0 +1,22 @@
+
+
+.filterContainer{
+  display: flex;
+  gap: 10px;
+}
+
+div:has(button.btnBuscar){
+  align-self: flex-end;
+  
+}
+.formReportAlquiler{
+  margin-bottom: 20px;
+}
+.btnBuscar{
+  padding: 10px 24px;
+}
+.button-container{
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}

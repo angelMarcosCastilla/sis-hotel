@@ -282,6 +282,4 @@ BEGIN
 	WHERE  DATE(alquileres.registroentrada) BETWEEN _fecha1 AND _fecha2  ;
 END $$
 
-call spu_alquileresentrefechas('2023-05-31', '2023-06-01');
-
-select * from alquileres
+call spu_alquileresentrefechas('2023-05-31', '2023-06-02');
